@@ -1,0 +1,12 @@
+{
+  "name": "online-shopping-dba",
+  "version": "1.0.0",
+  "description": "Online Shopping Relational Database & Full-Stack System (Oracle DBA)",
+  "scripts": {
+    "start": "node server/src/index.js",
+    "server": "cd server && npm start",
+    "client": "cd client && npm run dev",
+    "build": "cd client && npm run build",
+    "dev": "node --watch server/src/index.js"
+  }
+}
