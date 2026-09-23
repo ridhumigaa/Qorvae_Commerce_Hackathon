@@ -194,6 +194,7 @@ online-shopping-dba/
 * **Department**: Artificial Intelligence & Machine Learning (AIML)
 * **Institution**: St. Joseph's College for Women, Tiruppur
 * **Partner / Program**: Tamil Nadu Skill Development Corporation (TNSkill) • AdroIT Technologies • Oracle
+* **GitHub Repository**: https://github.com/ridhumigaa/Qorvae_Commerce_Hackathon.git
 
 ---
 

@@ -13,7 +13,7 @@
 | **ID** | 7da3a429c5260608bcc40cf1e7433ef3 |
 | **College** | St. Josephs College for Women, Tiruppur |
 | **Date of Submission** | 23/09/2026 |
-| **GitHub Repo** | https://github.com/your-username/online-shopping-dba |
+| **GitHub Repo** | https://github.com/ridhumigaa/Qorvae_Commerce_Hackathon.git |
 | **Deployment Link** | http://localhost:5000 (Full-Stack Storefront & Oracle DBA Console) |
 
 ---
