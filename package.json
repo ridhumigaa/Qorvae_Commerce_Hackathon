@@ -3,10 +3,11 @@
   "version": "1.0.0",
   "description": "Online Shopping Relational Database & Full-Stack System (Oracle DBA)",
   "scripts": {
+    "install-all": "npm --prefix server install && npm --prefix client install",
+    "build": "npm --prefix server install && npm --prefix client install && npm --prefix client run build",
     "start": "node server/src/index.js",
     "server": "cd server && npm start",
     "client": "cd client && npm run dev",
-    "build": "cd client && npm run build",
     "dev": "node --watch server/src/index.js"
   }
 }
