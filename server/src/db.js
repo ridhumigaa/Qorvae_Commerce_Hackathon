@@ -1,9 +1,13 @@
-const oracledb = require('oracledb');
+let oracledb = null;
+try {
+  oracledb = require('oracledb');
+  oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
+} catch (e) {
+  console.log('[OracleDB] Running in Serverless/Cloud environment without native oracledb library.');
+}
+
 const path = require('path');
 const fs = require('fs');
-
-// Configure oracledb defaults
-oracledb.outFormat = oracledb.OUT_FORMAT_OBJECT;
 
 let pool = null;
 let isConnected = false;
@@ -13,6 +17,13 @@ let connectionError = null;
 let memoryFallbackData = null;
 
 async function initOraclePool() {
+  if (process.env.VERCEL || !oracledb) {
+    isConnected = false;
+    connectionError = 'Vercel Cloud Serverless: Intelligent In-Memory Cache active';
+    initFallbackData();
+    return false;
+  }
+
   const user = process.env.ORACLE_USER || 'ECOMMERCE_DBA';
   const password = process.env.ORACLE_PASSWORD || 'Ecommerce123';
   const connectString = process.env.ORACLE_CONNECT_STRING || 'localhost:1521/XEPDB1';
