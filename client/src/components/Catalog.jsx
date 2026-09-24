@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Filter, ShoppingCart, Check, AlertTriangle, Layers, Tag } from 'lucide-react';
+import { INITIAL_CATEGORIES, INITIAL_PRODUCTS } from '../data/initialData';
 
 export default function Catalog({ onAddToCart }) {
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
+  const [products, setProducts] = useState(INITIAL_PRODUCTS);
+  const [categories, setCategories] = useState(INITIAL_CATEGORIES);
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [lowStockOnly, setLowStockOnly] = useState(false);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [addedNotice, setAddedNotice] = useState(null);
 
   useEffect(() => {
@@ -21,17 +22,18 @@ export default function Catalog({ onAddToCart }) {
   const fetchCategories = async () => {
     try {
       const res = await fetch('/api/categories');
-      const data = await res.json();
-      if (data.success) {
-        setCategories(data.data);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setCategories(data.data);
+        }
       }
     } catch (err) {
-      console.error('Failed to load categories', err);
+      console.warn('API categories fetch fallback to built-in cache:', err);
     }
   };
 
   const fetchProducts = async () => {
-    setLoading(true);
     try {
       const params = new URLSearchParams();
       if (selectedCategory) params.append('category_id', selectedCategory);
@@ -39,15 +41,39 @@ export default function Catalog({ onAddToCart }) {
       if (lowStockOnly) params.append('low_stock', 'true');
 
       const res = await fetch(`/api/products?${params.toString()}`);
-      const data = await res.json();
-      if (data.success) {
-        setProducts(data.data);
+      if (res.ok) {
+        const data = await res.json();
+        if (data.success && Array.isArray(data.data) && data.data.length > 0) {
+          setProducts(data.data);
+          return;
+        }
       }
+      applyClientFilter();
     } catch (err) {
-      console.error('Failed to load products', err);
+      console.warn('API products fetch fallback to built-in cache:', err);
+      applyClientFilter();
     } finally {
       setLoading(false);
     }
+  };
+
+  const applyClientFilter = () => {
+    let filtered = [...INITIAL_PRODUCTS];
+    if (selectedCategory) {
+      filtered = filtered.filter(p => p.CATEGORY_ID === parseInt(selectedCategory, 10));
+    }
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase().trim();
+      filtered = filtered.filter(p =>
+        p.NAME.toLowerCase().includes(term) ||
+        p.SKU.toLowerCase().includes(term) ||
+        p.DESCRIPTION.toLowerCase().includes(term)
+      );
+    }
+    if (lowStockOnly) {
+      filtered = filtered.filter(p => p.STOCK_QUANTITY <= p.REORDER_LEVEL);
+    }
+    setProducts(filtered);
   };
 
   const handleAdd = (product) => {

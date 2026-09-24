@@ -15,6 +15,7 @@ let connectionError = null;
 
 // Dual-mode fallback in-memory cache if Oracle service is stopped
 let memoryFallbackData = null;
+initFallbackData();
 
 async function initOraclePool() {
   if (process.env.VERCEL || !oracledb) {
@@ -216,5 +217,8 @@ module.exports = {
   initOraclePool,
   executeQuery,
   getDatabaseStatus,
-  getMemoryFallback: () => memoryFallbackData
+  getMemoryFallback: () => {
+    if (!memoryFallbackData) initFallbackData();
+    return memoryFallbackData;
+  }
 };

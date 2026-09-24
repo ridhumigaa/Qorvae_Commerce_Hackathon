@@ -17,16 +17,27 @@ app.use(express.json());
 // Initialize DB or fallback immediately
 initOraclePool().catch(err => console.error('[Vercel Serverless] DB init error:', err));
 
-// API Routes
+// API Routes (supports both /api/path and /path)
 app.use('/api/categories', categoriesRouter);
+app.use('/categories', categoriesRouter);
+
 app.use('/api/products', productsRouter);
+app.use('/products', productsRouter);
+
 app.use('/api/customers', customersRouter);
+app.use('/customers', customersRouter);
+
 app.use('/api/orders', ordersRouter);
+app.use('/orders', ordersRouter);
+
 app.use('/api/order-history', orderHistoryRouter);
+app.use('/order-history', orderHistoryRouter);
+
 app.use('/api/dba', dbaRouter);
+app.use('/dba', dbaRouter);
 
 // Health check
-app.get('/api/health', (req, res) => {
+app.get(['/api/health', '/health'], (req, res) => {
   const dbStatus = getDatabaseStatus();
   res.json({
     status: 'ONLINE',
